@@ -1,0 +1,48 @@
+CREATE DATABASE TEST;
+
+USE TEST;
+
+CREATE TABLE clienti
+(
+idCliente INT(6) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+cognome VARCHAR(50) NOT NULL,
+nome VARCHAR(50) NOT NULL,
+email VARCHAR(50) NOT NULL,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE prodotti(
+idProdotto INT(6) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+codpro INT(6) NOT NULL,
+des VARCHAR(30) NOT NULL,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE ordini(
+idOrdine INT(6) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+idCliente INT(6) NOT NULL,
+idProdotto INT(6) NOT NULL,
+qta FLOAT(6,2) NOT NULL,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+INDEX idCliente_FK (idCliente),
+FOREIGN KEY (idCliente)
+REFERENCES clienti(idCliente)
+ON DELETE CASCADE,
+INDEX idProdotto_FK (idProdotto),
+FOREIGN KEY (idProdotto)
+REFERENCES prodotti(idProdotto)
+ON DELETE CASCADE
+);
+
+ALTER TABLE ordini ADD nOrd INT(6) NULL AFTER idOrdine;
+
+CREATE TABLE `testdb`.`z_numeratoreord` ( `anno` INT(4) NOT NULL , `nOrd` INT(6) NOT NULL );
+
+SELECT ordini.idOrdine, ordini.nOrd, ordini.idProdotto, prod.des, ordini.qta
+FROM ordini INNER JOIN prodotti AS prod ON ordini.idProdotto = prod.idProdotto;
+
+SELECT ordini.nOrd, cli.cognome, cli.nome, COUNT(ordini.idProdotto) AS nRighe, SUM(ordini.qta) AS qtaTot FROM ordini
+INNER JOIN prodotti AS prod ON ordini.idProdotto = prod.idProdotto
+INNER JOIN clienti AS cli ON ordini.idCliente = cli.idCliente
+GROUP BY nOrd, cognome, nome
+ORDER BY nOrd DESC;

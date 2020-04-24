@@ -1,0 +1,12 @@
+{
+    "name": "ym/progetto01",
+    "authors": [
+        {
+            "name": "Marchitto Yari",
+            "email": "yari.marchitto@linfanet.it"
+        }
+    ],
+    "require": {
+        "fzaninotto/faker": "^1.9"
+    }
+}
